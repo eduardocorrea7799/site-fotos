@@ -1,4 +1,341 @@
-<html>
-    <h1>meu super site</h1>
-    <h2>Eduardo Corrêa</h2>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Galeria Clique | Fotos</title>
+  <style>
+    /* RESET e ESTILOS GLOBAIS */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f5f7fc 0%, #e9eef4 100%);
+      font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    /* CARD PRINCIPAL - centralização vertical/horizontal + elegância */
+    .photo-gallery {
+      max-width: 800px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(2px);
+      border-radius: 3rem;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.35), 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 2rem 1.5rem 2.5rem 1.5rem;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    /* TÍTULO "Fotos" - centralizado, com estilo refinado */
+    .title {
+      font-size: 3.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #1a2a3a, #2c3e4e);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 1.8rem;
+      position: relative;
+      display: inline-block;
+      width: auto;
+      padding: 0 0.5rem;
+    }
+
+    /* linha decorativa suave abaixo do título (opcional, mas mantém elegância) */
+    .title::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 20%;
+      width: 60%;
+      height: 3px;
+      background: linear-gradient(90deg, #b9c8e0, #5f7f9e, #b9c8e0);
+      border-radius: 3px;
+    }
+
+    /* CONTAINER DA FOTO: responsivo e centralizado */
+    .image-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 1.5rem 0 1rem 0;
+      cursor: pointer;
+    }
+
+    /* ESTILO DA FOTO: borda elegante, sombra e transição suave */
+    .clickable-photo {
+      max-width: 100%;
+      width: auto;
+      height: auto;
+      max-height: 55vh;
+      border-radius: 28px;
+      box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0,0,0,0.1);
+      transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1), box-shadow 0.2s;
+      background-color: #f0f2f5;
+      object-fit: cover;
+      border: 3px solid rgba(255,255,255,0.7);
+    }
+
+    /* efeito de clique interativo: leve escala + realce */
+    .clickable-photo:active {
+      transform: scale(0.97);
+      transition: transform 0.05s;
+    }
+
+    /* hover sutil indica interatividade */
+    .clickable-photo:hover {
+      transform: scale(1.01);
+      box-shadow: 0 25px 35px -14px rgba(0, 0, 0, 0.45);
+      filter: brightness(1.02);
+      cursor: pointer;
+    }
+
+    /* instrução extra / legenda animada */
+    .photo-hint {
+      margin-top: 1.6rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #2c3e4e;
+      background: rgba(230, 240, 250, 0.7);
+      display: inline-block;
+      padding: 0.5rem 1.4rem;
+      border-radius: 40px;
+      backdrop-filter: blur(4px);
+      letter-spacing: 0.3px;
+      transition: all 0.2s;
+    }
+
+    .photo-hint i {
+      font-style: normal;
+      display: inline-block;
+      animation: subtlePulse 1.8s infinite;
+    }
+
+    @keyframes subtlePulse {
+      0% { opacity: 0.7; transform: scale(1);}
+      50% { opacity: 1; transform: scale(1.02);}
+      100% { opacity: 0.7; transform: scale(1);}
+    }
+
+    /* contador / feedback (opcional e discreto) */
+    .counter-status {
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: #4a627a;
+      background: rgba(255,255,240,0.5);
+      display: inline-block;
+      padding: 0.2rem 1rem;
+      border-radius: 20px;
+      font-family: monospace;
+      letter-spacing: 0.5px;
+    }
+
+    /* responsividade para telas menores */
+    @media (max-width: 550px) {
+      .photo-gallery {
+        padding: 1.5rem 1rem 2rem 1rem;
+        border-radius: 2rem;
+      }
+      .title {
+        font-size: 2.4rem;
+      }
+      .clickable-photo {
+        max-height: 45vh;
+        border-radius: 20px;
+      }
+      .photo-hint {
+        font-size: 0.8rem;
+        padding: 0.4rem 1rem;
+      }
+    }
+
+    /* fallback para imagem quebrada / carregamento */
+    .clickable-photo.error-load {
+      opacity: 0.8;
+      filter: grayscale(0.2);
+    }
+  </style>
+</head>
+<body>
+
+<div class="photo-gallery">
+  <!-- Título principal "Fotos" centralizado (horizontal por padrão com text-align) -->
+  <h1 class="title">Fotos</h1>
+  
+  <!-- Área da foto: ao clicar, troca a imagem (f1.jpg -> f2.jpg -> f3.jpg -> volta f1) -->
+  <div class="image-container">
+    <img id="mainPhoto" class="clickable-photo" src="fotos/f1.jpg" alt="Galeria de fotos - clique para trocar" loading="eager">
+  </div>
+  
+  <!-- Texto de instrução interativo e leve -->
+  <div class="photo-hint">
+    ✨ <i>clique na foto para mudar a imagem</i> ✨
+  </div>
+  <div class="counter-status" id="photoCounter">
+    📸 foto 1 de 3
+  </div>
+</div>
+
+<script>
+  // ============================================================
+  // Lógica de troca de fotos - pasta "fotos" com f1.jpg, f2.jpg, f3.jpg
+  // Array com os nomes dos arquivos (conforme especificação)
+  // ============================================================
+  const photoList = ['f1.jpg', 'f2.jpg', 'f3.jpg'];
+  let currentIndex = 0;        // começa com f1.jpg (índice 0)
+  
+  // Referência para o elemento <img>
+  const photoElement = document.getElementById('mainPhoto');
+  const counterSpan = document.getElementById('photoCounter');
+  
+  // Função para atualizar a foto com base no índice atual
+  // Garante que o caminho sempre use a pasta "fotos/" (conforme estrutura)
+  function updatePhoto() {
+    // Monta o caminho relativo: fotos/f1.jpg, fotos/f2.jpg, etc.
+    const photoPath = `fotos/${photoList[currentIndex]}`;
+    
+    // Aplica um pequeno efeito de transição (opcional: fade rápido)
+    // Para tornar a experiência suave, adicionamos uma classe de fade breve
+    photoElement.style.transition = 'opacity 0.12s ease';
+    photoElement.style.opacity = '0.7';
+    
+    // Define o src; ao carregar, restaura opacidade
+    photoElement.src = photoPath;
+    
+    // Quando a imagem terminar de carregar, garante opacidade total e remove classe de erro se houver
+    photoElement.onload = () => {
+      photoElement.style.opacity = '1';
+      photoElement.classList.remove('error-load');
+      // Atualiza o contador textual (feedback visual)
+      updateCounterText();
+    };
+    
+    // Tratamento de erro: se a imagem não existir (ex.: por nome incorreto), mostra mensagem discreta no console
+    // e mantém a consistência com fallback (sem quebrar layout)
+    photoElement.onerror = () => {
+      console.warn(`⚠️ Não foi possível carregar a imagem: ${photoPath}. Verifique se o arquivo existe na pasta "fotos".`);
+      photoElement.style.opacity = '1';
+      photoElement.classList.add('error-load');
+      // Opcional: colocar um texto alternativo ou manter a última imagem válida? 
+      // Vamos tentar reverter para a primeira imagem válida em caso de erro persistente
+      // Por segurança, apenas exibe alt e não quebra a experiência
+      photoElement.alt = `Imagem não encontrada: ${photoList[currentIndex]}`;
+      // Não substitui automaticamente para não loop infinito, mas mostra dica
+      updateCounterText(true);
+    };
+  }
+  
+  // Atualiza o texto do contador (ex: "📸 foto 2 de 3")
+  function updateCounterText(isErrorFlag = false) {
+    if (counterSpan) {
+      const currentNumber = currentIndex + 1;
+      const total = photoList.length;
+      if (isErrorFlag) {
+        counterSpan.innerHTML = `⚠️ erro ao carregar "${photoList[currentIndex]}" | tente novamente`;
+        // após 2 segundos voltar mensagem normal se possível? apenas feedback temporário
+        setTimeout(() => {
+          if (counterSpan && !counterSpan.innerHTML.includes('foto')) {
+            updateCounterText(false);
+          }
+        }, 2000);
+      } else {
+        counterSpan.innerHTML = `📸 foto ${currentNumber} de ${total}`;
+      }
+    }
+  }
+  
+  // Função para avançar para a próxima foto (cíclica)
+  function nextPhoto() {
+    // Incrementa o índice, se atingir o tamanho do array, volta para 0 (f1.jpg)
+    currentIndex = (currentIndex + 1) % photoList.length;
+    updatePhoto();
+  }
+  
+  // Evento de clique na imagem: troca a foto
+  if (photoElement) {
+    photoElement.addEventListener('click', (event) => {
+      // pequeno efeito visual já no CSS (active)
+      nextPhoto();
+      // feedback sutil: podemos mostrar um ripple discreto? não necessário, mas a experiência é direta
+    });
+  }
+  
+  // Pré-carregamento otimizado: carrega as imagens em background para tornar a troca mais rápida
+  // e sem delay inesperado (evita latência de rede ao clicar)
+  function preloadImages() {
+    photoList.forEach(photoName => {
+      const img = new Image();
+      img.src = `fotos/${photoName}`;
+    });
+  }
+  preloadImages();
+  
+  // Inicialização: garantir que a foto inicial seja exibida corretamente e o contador esteja sincronizado
+  // (caso a primeira imagem tenha algum problema de cache/url, já tratamos)
+  // Garantir que a imagem inicial seja f1.jpg de forma explícita (caso o HTML já aponte para fotos/f1.jpg)
+  // Reforçamos o src com o caminho completo para evitar qualquer discrepância.
+  (function init() {
+    // Força o reset para o índice 0 e carrega a imagem correta
+    currentIndex = 0;
+    const initPath = `fotos/${photoList[0]}`;
+    if (photoElement.src !== initPath) {
+      photoElement.src = initPath;
+    }
+    // Define alt descritivo
+    photoElement.alt = `Foto 1: ${photoList[0]} - clique para alternar`;
+    // Se por acaso a imagem não carregar, tentamos assegurar que o onerror não deixe quebrado
+    photoElement.onload = () => {
+      photoElement.style.opacity = '1';
+      photoElement.classList.remove('error-load');
+      updateCounterText(false);
+    };
+    photoElement.onerror = () => {
+      console.warn(`Aviso: a imagem inicial ${initPath} não foi encontrada. Verifique a pasta "fotos" e se o arquivo f1.jpg existe.`);
+      photoElement.alt = "Erro ao carregar f1.jpg - verifique os arquivos";
+      updateCounterText(true);
+      // ainda assim mantém o contador com texto informativo
+    };
+    updateCounterText();
+    // garantir opacidade inicial correta
+    photoElement.style.opacity = '1';
+    photoElement.style.transition = 'opacity 0.2s';
+  })();
+  
+  // Adicional: se o usuário clicar e a imagem falhar constantemente por causa de caminho,
+  // mostramos um alerta amigável no console (mas sem poluir a tela)
+  // Compatibilidade com Touch/mobile: bem suportado.
+  
+  // Pequeno bônus: ao pressionar a tecla Espaço ou Enter quando a foto estiver em foco?
+  // (Acessibilidade extra - mas não obrigatório, apenas enriquece)
+  photoElement.setAttribute('tabindex', '0');
+  photoElement.setAttribute('role', 'button');
+  photoElement.setAttribute('aria-label', 'Clique na foto para alternar entre as imagens f1, f2 e f3');
+  photoElement.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      nextPhoto();
+    }
+  });
+  
+  // Para garantir total centralização vertical e horizontal, a .photo-gallery já está
+  // sendo alinhada pelo body com flex (align-items: center, justify-content: center)
+  // Título e foto estão centralizados dentro do card via text-align e block interno.
+  // Caso haja necessidade de centralização extra do container da imagem, .image-container
+  // utiliza flex com justify-content: center e align-items: center, assegurando que a imagem,
+  // mesmo se menor que a largura máxima, fique perfeitamente centrada.
+  // FIM DO SCRIPT
+</script>
+</body>
 </html>
